@@ -64,10 +64,11 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
 
             children: [
-              Text("TEMPERATURE",
+              Text("Tempreture",
                 style: TextStyle(
                   fontSize: 43,
                   fontWeight: FontWeight.bold,
+                  color: Colors.white
 
                 ),
               ),
@@ -83,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Text(
                     temperature.toString()+"\u2103",
                     style: TextStyle(
-                        fontSize: 50.0,
+                        fontSize: 80.0,
                         fontWeight: FontWeight.w500,
                         color: Colors.white
 
@@ -123,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Text(
                     humidity.toString()+" %",
                     style: TextStyle(
-                        fontSize: 50.0,
+                        fontSize: 80.0,
                         fontWeight: FontWeight.w500,
                         color: Colors.white
                     ),
