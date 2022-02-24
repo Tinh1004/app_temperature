@@ -1,6 +1,12 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:app_temperature/viewmodel/HomeViewModel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider_architecture/_viewmodel_provider.dart';
+import 'dart:convert';
+import 'package:app_temperature/model/Temperature.dart';
+import 'package:http/http.dart' as http;
+
 void main() {
   runApp(const MyApp());
 }
@@ -33,8 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int random(min, max){
     return min + Random().nextInt(max - min);
   }
-  int? temperature;
-  int? humidity;
+  var temperature = "";
+  var humidity = "";
 
   late Timer timer;
   @override
@@ -45,9 +51,34 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void callApi() {
+    getNewsData();
+  }
+  var url1 = "https://thingspeak.com/channels/1661309/field/1.json?&amp;offset=0&amp;results=60;";
+  var url2 = "https://thingspeak.com/channels/1661309/field/2.json?&amp;offset=0&amp;results=60;";
+
+  getNewsData() async  {
+    var response1 = await http.get(Uri.parse(url1));
+    var response2 = await http.get(Uri.parse(url2));
+    var _newTemperature= "";
+    var _newHumidity= "";
+
+    if(response1.statusCode == 200){
+      List m = jsonDecode(response1.body)['feeds'];
+      _newTemperature = m[m.length - 1]["field1"];
+    }else{
+      _newTemperature = "";
+    }
+
+    if(response2.statusCode == 200){
+      List m = jsonDecode(response2.body)['feeds'];
+      _newHumidity = m[m.length - 1]["field2"];
+    }else{
+      _newHumidity = "";
+    }
+    Temperature newT = new Temperature(_newTemperature,_newHumidity);
     setState((){
-      temperature= random(0,40);
-      humidity = random(0,100);
+      temperature= _newTemperature;
+      humidity = _newHumidity;
     });
   }
 
@@ -145,10 +176,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
         title: Text(widget.title),
       ),
-      body: Padding(
-        padding: EdgeInsets.only(left: 20, right: 20),
-        child: buildCountWidget(),
+      body: ViewModelProvider<HomeViewModel>.withConsumer(
+        viewModelBuilder: () => HomeViewModel(),
+        onModelReady: (model) async {
+          model.getNewsData();
+        },
+        builder: (context, model, child) => Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: buildCountWidget(),
+        ),
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           callApi();
