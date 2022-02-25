@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
 
             children: [
-              Text("Tempreture",
+              Text("Temperature",
                 style: TextStyle(
                   fontSize: 43,
                   fontWeight: FontWeight.bold,
